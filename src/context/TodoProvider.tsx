@@ -10,6 +10,7 @@ import { useAuth } from "./AuthContext";
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   orderBy,
@@ -24,6 +25,7 @@ type TodoContextProps = {
   todos?: TodoModel[];
   addTodo: (todo: TodoModelWithFieldValue) => Promise<void>;
   updateTodoComplition: (id: string, completed: boolean) => Promise<void>;
+  removeTodo: (id: string) => Promise<void>;
 };
 
 const TodoContext = createContext<TodoContextProps | null>(null);
@@ -107,10 +109,19 @@ const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
     }
   };
 
-  const removeTodo = () => {};
+  const removeTodo = async (id: string) => {
+    const deleteDocRef = doc(DB, "todos", id);
+    try {
+      await deleteDoc(deleteDocRef);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
-    <TodoContext.Provider value={{ todos, addTodo, updateTodoComplition }}>
+    <TodoContext.Provider
+      value={{ todos, addTodo, updateTodoComplition, removeTodo }}
+    >
       {children}
     </TodoContext.Provider>
   );

@@ -9,7 +9,7 @@ type TodoProps = {
 };
 
 const Todo: React.FC<TodoProps> = ({ todo }) => {
-  const { updateTodoComplition } = useTodos();
+  const { updateTodoComplition, removeTodo } = useTodos();
   const date = dateFormatter(todo.createdAt);
   const [dateInYears, timeInDay] = date?.split(",") || [];
 
@@ -32,13 +32,14 @@ const Todo: React.FC<TodoProps> = ({ todo }) => {
   }
 
   return (
-    <Card className="flex-grow-1">
-      <div className={`w-100 p-2 todo-card relative`}>
+    <Card className="flex-grow-1 todo-card">
+      <div className={`p-2 todo-card`}>
         <Form.Check
           type="switch"
           defaultChecked={todo.completed}
           onChange={(e) => updateTodoComplition(todo.id, e.target.checked)}
         />
+        <button onClick={() => removeTodo(todo.id)}>Remove</button>
         <h4 className="text-center ">{todo.title}</h4>
         <p className="todo-content overflow-auto">{todo.content}</p>
         <p>{todo.completed}</p>
