@@ -1,12 +1,13 @@
 import Signup from "./components/AuthArea/Signup";
 import Login from "./components/AuthArea/Login";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Dashboard from "./components/Dashboard";
 import ProtectedRoute from "./components/AuthArea/ProtectedRoute";
 import ForgotPassword from "./components/AuthArea/ForgotPassword";
 import UpdateProfile from "./components/AuthArea/UpdateProfile";
 import TodoList from "./components/TodosArea/TodoList";
-import CreateTodo from "./components/TodosArea/createTodo";
+import Profile from "./components/AuthArea/Profile";
+import CreateTodo from "./components/TodosArea/CreateTodo";
+import Layout from "./components/LayoutArea/Layout";
 
 function App() {
   return (
@@ -14,13 +15,13 @@ function App() {
       <Routes>
         {/**Todos Routes */}
         <Route path="/todos" element={<ProtectedRoute redirect="/login" />}>
-          <Route path="" Component={TodoList} />
+          <Route path="" Component={Layout} />
           <Route path="create" Component={CreateTodo} />
         </Route>
 
         {/**Auth Routes */}
         <Route element={<ProtectedRoute redirect="/login" />}>
-          <Route path="/" Component={Dashboard} />
+          <Route path="/profile" Component={Profile} />
           <Route path="/update-profile" Component={UpdateProfile} />
         </Route>
         <Route path="/signup" Component={Signup} />

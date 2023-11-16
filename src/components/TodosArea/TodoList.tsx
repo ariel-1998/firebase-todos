@@ -1,16 +1,16 @@
 import React from "react";
 import { useTodos } from "../../context/TodoProvider";
 import Todo from "./Todo";
+import { Container } from "react-bootstrap";
 
 const TodoList: React.FC = () => {
   const { todos } = useTodos();
-  console.log(todos);
   return (
-    <div>
+    <Container fluid className="d-flex flex-row flex-wrap">
       {todos?.map((todo) => (
         <Todo key={todo.id} todo={todo} />
       ))}
-    </div>
+    </Container>
   );
 };
 

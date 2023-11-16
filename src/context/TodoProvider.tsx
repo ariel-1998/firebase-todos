@@ -7,13 +7,23 @@ import React, {
 } from "react";
 import { TodoModel, TodoModelWithFieldValue } from "../models/TodoModel";
 import { useAuth } from "./AuthContext";
-import { addDoc, collection, getDocs } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { DB } from "../utils/firebaseConfig";
 import { v4 as uuidV4 } from "uuid";
 
 type TodoContextProps = {
   todos?: TodoModel[];
   addTodo: (todo: TodoModelWithFieldValue) => Promise<void>;
+  updateTodoComplition: (id: string, completed: boolean) => Promise<void>;
 };
 
 const TodoContext = createContext<TodoContextProps | null>(null);
@@ -35,8 +45,13 @@ const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
 
   useEffect(() => {
     if (!user) return;
+    const q = query(
+      todosRef,
+      where("userId", "==", user.uid),
+      orderBy("createdAt")
+    );
     const getTodos = async () => {
-      const querySnapshot = await getDocs(todosRef);
+      const querySnapshot = await getDocs(q);
       const todos = querySnapshot.docs.map((doc) => ({
         ...doc.data(),
         id: doc.id,
@@ -50,15 +65,14 @@ const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
   const addTodo = async (todo: TodoModelWithFieldValue) => {
     try {
       const tempId = uuidV4();
-      const temporaryTodo: TodoModel = {
+      const tempTodo: TodoModel = {
         ...todo,
         createdAt: new Date(),
         id: tempId,
       };
-      setTodos((prev) => (prev ? [temporaryTodo, ...prev] : [temporaryTodo]));
 
+      setTodos((prev) => (prev ? [tempTodo, ...prev] : [tempTodo]));
       const querySnapshot = await addDoc(todosRef, todo);
-
       setTodos((prev) =>
         prev?.map((todo) => {
           if (todo.id !== tempId) return todo;
@@ -66,12 +80,37 @@ const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
         })
       );
     } catch (error) {
+      //handle errors
       console.error(error);
     }
   };
 
+  const updateTodoComplition = async (id: string, completed: boolean) => {
+    const docRef = doc(DB, "todos", id);
+    setTodos((prev) =>
+      prev?.map((todo) => {
+        if (todo.id !== id) return todo;
+        return { ...todo, completed };
+      })
+    );
+    try {
+      await updateDoc(docRef, { completed });
+    } catch (error) {
+      //handle error
+      console.log(error);
+      setTodos((prev) =>
+        prev?.map((todo) => {
+          if (todo.id !== id) return todo;
+          return { ...todo, completed: !completed };
+        })
+      );
+    }
+  };
+
+  const removeTodo = () => {};
+
   return (
-    <TodoContext.Provider value={{ todos, addTodo }}>
+    <TodoContext.Provider value={{ todos, addTodo, updateTodoComplition }}>
       {children}
     </TodoContext.Provider>
   );
