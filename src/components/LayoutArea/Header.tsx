@@ -1,20 +1,28 @@
 import React from "react";
 import { Navbar, Container, Nav } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 const Header: React.FC = () => {
+  const { pathname } = useLocation();
+
+  const todosLinkClass = pathname === "/todos" ? "active" : "";
+  const createTodoLinkClass = pathname === "/todos/create" ? "active" : "";
   return (
     <Navbar expand="lg" className="bg-body-tertiary">
       <Container>
-        <Navbar.Brand as={Link} to="/todos">
+        <Navbar.Brand as={Link} to="/todos" className="">
           Todos
         </Navbar.Brand>
         <Navbar.Collapse>
           <Nav>
-            <Nav.Link as={Link} to="/todos">
+            <Nav.Link as={Link} to="/todos" className={todosLinkClass}>
               Home
             </Nav.Link>
-            <Nav.Link as={Link} to="/todos/create">
+            <Nav.Link
+              as={Link}
+              to="/todos/create"
+              className={createTodoLinkClass}
+            >
               Add Todo
             </Nav.Link>
             {/* <NavDropdown title="Dropdown">

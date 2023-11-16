@@ -2,7 +2,7 @@ import React from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import Header from "./Header";
 import Footer from "./Footer";
-import Content from "./Content";
+import { Outlet } from "react-router-dom";
 
 const Layout: React.FC = () => {
   return (
@@ -15,7 +15,7 @@ const Layout: React.FC = () => {
 
         {/* Content */}
         <Col className="p-0 flex-grow-1 overflow-auto">
-          <Content />
+          <Outlet />
         </Col>
 
         {/* Footer */}

@@ -1,7 +1,7 @@
 import { FieldValue, Timestamp } from "firebase/firestore";
 
 export type TodoModel = {
-  id?: string;
+  id: string;
   userId: string;
   title: string;
   content: string;

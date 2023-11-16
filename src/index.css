@@ -8,3 +8,12 @@
 .layout {
   height: 100vh;
 }
+
+.todo-content {
+  height: 150px;
+  min-width: 250px;
+}
+
+.form-check-input {
+  cursor: pointer;
+}
