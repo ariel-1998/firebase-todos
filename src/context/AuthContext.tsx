@@ -20,7 +20,7 @@ type AuthContextProps = {
   user: User | null;
   userSignUp: (email: string, password: string) => Promise<UserCredential>;
   userLogin: (email: string, password: string) => Promise<UserCredential>;
-  handleErrors(setter: (msg: string) => void, code: string): void;
+  handleErrors(code: string): string;
   userLogout: () => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   emailUpdate: (email: string) => Promise<void>;
@@ -80,28 +80,39 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     return updatePassword(user, password);
   };
 
-  function handleErrors(setter: (msg: string) => void, code: string) {
+  function handleErrors(code: string) {
+    let message: string;
     switch (code) {
       case "auth/email-already-exists":
-        setter("Email already exist.");
+        message = "Email already exist.";
         break;
       case "auth/email-already-in-use":
-        setter("Email already exist.");
+        message = "Email already exist.";
         break;
       case "auth/invalid-email":
-        setter("Invalid email.");
+        message = "Invalid email.";
         break;
       case "auth/user-not-found":
-        setter("User not found.");
+        message = "User not found.";
         break;
       case "auth/invalid-login-credentials":
-        setter("Email or password are incorrect.");
+        message = "Email or password are incorrect.";
+        break;
+      case "auth/id-token-expired":
+        message = "You must login again inorder to continue";
+        break;
+      case "auth/too-many-requests":
+        message = "Too many requests try again later";
+        break;
+      case "auth/invalid-credential	":
+        message = "Email or password are incorrect.";
         break;
 
       default:
-        setter("There was something wrong.");
+        message = "There was something wrong.";
         break;
     }
+    return message;
   }
 
   return (

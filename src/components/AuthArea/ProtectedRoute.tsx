@@ -1,5 +1,5 @@
-import React, { useEffect, ReactNode } from "react";
-import { RouteProps, Outlet, Navigate, Route } from "react-router-dom";
+import React from "react";
+import { Outlet, Navigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 type ProtectedRouteProps = {

@@ -31,7 +31,8 @@ const Signup: React.FC = () => {
       setError("");
       navigate("/");
     } catch (error: any) {
-      handleErrors(setError, error.code);
+      const err = handleErrors(error?.code || "");
+      setError(err);
     }
     setLoading(false);
   };

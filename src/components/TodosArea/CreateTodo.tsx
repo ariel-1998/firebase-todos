@@ -32,7 +32,7 @@ const CreateTodo: React.FC = () => {
     setError("");
     setLoading(true);
     addTodo(todo)
-      .then(() => navigate("/todos"))
+      .then(() => navigate("/"))
       .catch(() => setError("Could not create note, try again."))
       .finally(() => setLoading(false));
   };

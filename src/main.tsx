@@ -5,6 +5,8 @@ import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AuthProvider from "./context/AuthContext.tsx";
 import TodoProvider from "./context/TodoProvider.tsx";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
@@ -13,5 +15,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <App />
       </TodoProvider>
     </AuthProvider>
+    <ToastContainer />
   </React.StrictMode>
 );

@@ -1,46 +1,67 @@
 import React from "react";
-import { Navbar, Container, Nav } from "react-bootstrap";
+import { Navbar, Container, Nav, NavDropdown, Dropdown } from "react-bootstrap";
 import { Link, useLocation } from "react-router-dom";
+import Logout from "../AuthArea/Logout";
 
 const Header: React.FC = () => {
   const { pathname } = useLocation();
 
-  const todosLinkClass = pathname === "/todos" ? "active" : "";
-  const createTodoLinkClass = pathname === "/todos/create" ? "active" : "";
+  const activClassName = `fw-bold text-dark`;
+  const todosLinkClass = pathname === "/" ? activClassName : "text-secondary";
+  const createTodoLinkClass =
+    pathname === "/create" ? activClassName : "text-secondary";
+
   return (
-    <Navbar expand="lg" className="bg-body-tertiary">
+    <Navbar expand="sm" className="bg-body-tertiary">
       <Container>
-        <Navbar.Brand as={Link} to="/todos" className="">
-          Todos
+        <Navbar.Brand as={Link} to="/" className="fw-bold">
+          TODOS
         </Navbar.Brand>
         <Navbar.Collapse>
           <Nav>
-            <Nav.Link as={Link} to="/todos" className={todosLinkClass}>
-              Home
+            <Nav.Link as={Link} to="/" className={`${todosLinkClass} fw-bold`}>
+              HOME
             </Nav.Link>
             <Nav.Link
               as={Link}
-              to="/todos/create"
-              className={createTodoLinkClass}
+              to="/create"
+              className={`${createTodoLinkClass} fw-bold`}
             >
-              Add Todo
+              ADD TODO
             </Nav.Link>
-            {/* <NavDropdown title="Dropdown">
-              <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">
-                Another action
-              </NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.4">
-                Separated link
-              </NavDropdown.Item>
-            </NavDropdown> */}
+            <NavDropdown title="More" className="text-secondary">
+              <Dropdown.Item as={Link} to={"/profile"}>
+                PROFILE
+              </Dropdown.Item>
+              <Logout />
+            </NavDropdown>
           </Nav>
         </Navbar.Collapse>
+        <SmScreenDropDown />
       </Container>
     </Navbar>
   );
 };
 
 export default Header;
+
+function SmScreenDropDown() {
+  return (
+    <NavDropdown
+      title="More"
+      drop="start"
+      className="text-secondary d-sm-none "
+    >
+      <Dropdown.Item as={Link} to={"/"}>
+        HOME
+      </Dropdown.Item>
+      <Dropdown.Item as={Link} to={"/create"}>
+        ADD TODO
+      </Dropdown.Item>
+      <Dropdown.Item as={Link} to={"/profile"}>
+        PROFILE
+      </Dropdown.Item>
+      <Logout />
+    </NavDropdown>
+  );
+}

@@ -21,7 +21,8 @@ const ForgotPassword: React.FC = () => {
       setSuccessMsg("Email was sent to you.");
     } catch (error: any) {
       setSuccessMsg("");
-      handleErrors(setError, error.code);
+      const err = handleErrors(error?.code || "");
+      setError(err);
     }
     setLoading(false);
   };

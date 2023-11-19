@@ -8,27 +8,33 @@ import Profile from "./components/AuthArea/Profile";
 import CreateTodo from "./components/TodosArea/CreateTodo";
 import Layout from "./components/LayoutArea/Layout";
 import TodoList from "./components/TodosArea/TodoList";
+import WrongPathRedirect from "./components/WrongPathRedirect";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/**Todos Routes */}
-        <Route path="/todos" element={<ProtectedRoute redirect="/login" />}>
-          <Route Component={Layout}>
-            <Route path="" Component={TodoList} />
-            <Route path="create" Component={CreateTodo} />
-          </Route>
-        </Route>
-
         {/**Auth Routes */}
-        <Route element={<ProtectedRoute redirect="/login" />}>
-          <Route path="/profile" Component={Profile} />
-          <Route path="/update-profile" Component={UpdateProfile} />
-        </Route>
+        <Route element={<ProtectedRoute redirect="/login" />}></Route>
         <Route path="/signup" Component={Signup} />
         <Route path="/login" Component={Login} />
         <Route path="/forgot-password" Component={ForgotPassword} />
+
+        {/** dashboard */}
+        <Route element={<ProtectedRoute redirect="/login" />}>
+          {/** todos */}
+          <Route path="/" Component={Layout}>
+            <Route path="" Component={TodoList} />
+            <Route path="create" Component={CreateTodo} />
+
+            {/** profile and profile update */}
+            <Route path="profile" Component={Profile} />
+            <Route path="update-profile" Component={UpdateProfile} />
+          </Route>
+        </Route>
+
+        {/** wrong path */}
+        <Route path="*" Component={WrongPathRedirect} />
       </Routes>
     </BrowserRouter>
   );

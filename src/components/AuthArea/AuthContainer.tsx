@@ -7,10 +7,7 @@ type AuthContainerProps = {
 
 const AuthContainer: React.FC<AuthContainerProps> = ({ children }) => {
   return (
-    <Container
-      className="d-flex align-items-center justify-content-center"
-      style={{ minHeight: "100vh" }}
-    >
+    <Container className="d-flex align-items-center justify-content-center h-100 ">
       <div className="w-100" style={{ maxWidth: 400 }}>
         {children}
       </div>

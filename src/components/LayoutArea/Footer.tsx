@@ -1,11 +1,11 @@
 import React from "react";
 
-type FooterProps = {
-  // Define props here
-};
-
-const Footer: React.FC<FooterProps> = ({}) => {
-  return <div>footer</div>;
+const Footer: React.FC = () => {
+  return (
+    <div className="w-100 text-center border-top">
+      Project@Firebase&Firestore
+    </div>
+  );
 };
 
 export default Footer;

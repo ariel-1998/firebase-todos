@@ -37,13 +37,13 @@ const Todo: React.FC<TodoProps> = ({ todo }) => {
       <div className="d-flex justify-content-between">
         <DeleteTodoModal todo={todo} />
         <Form.Check
-          type="switch"
+          type="checkbox"
           defaultChecked={todo.complete}
           onChange={(e) => updateTodoComplition(todo.id, e.target.checked)}
         />
       </div>
       <h5 className="border-bottom my-1 fw-bold">{todo.title}</h5>
-      <p className="todo-content overflow-auto mt-1">{todo.content}</p>
+      <p className="todo-content  mt-1">{todo.content}</p>
       <div className="d-flex justify-content-between">
         <span>{timeInDay}</span>
         <span

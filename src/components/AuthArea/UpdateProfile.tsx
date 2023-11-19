@@ -33,7 +33,8 @@ const ResetCredentials: React.FC = () => {
         navigate("/");
       })
       .catch((error) => {
-        handleErrors(setError, error.code);
+        const err = handleErrors(error?.code || "");
+        setError(err);
       })
       .finally(() => {
         setLoading(false);

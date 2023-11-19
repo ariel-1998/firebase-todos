@@ -20,12 +20,15 @@ import {
 } from "firebase/firestore";
 import { DB } from "../utils/firebaseConfig";
 import { v4 as uuidV4 } from "uuid";
+import { errorToast } from "../utils/errorToast";
 
 type TodoContextProps = {
   todos?: TodoModel[];
   addTodo: (todo: TodoModelWithFieldValueAndNoId) => Promise<void>;
   updateTodoComplition: (id: string, complete: boolean) => Promise<void>;
   removeTodo: (id: string) => Promise<void>;
+  resetTodosOnLogout(): void;
+  loadingTodos: boolean;
 };
 
 const TodoContext = createContext<TodoContextProps | null>(null);
@@ -42,6 +45,7 @@ type TodoProviderProps = {
 
 const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
   const [todos, setTodos] = useState<TodoModel[]>();
+  const [loadingTodos, setLoadingTodos] = useState(false);
   const { user } = useAuth();
   const todosRef = collection(DB, "todos");
 
@@ -53,12 +57,19 @@ const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
       orderBy("createdAt")
     );
     const getTodos = async () => {
-      const querySnapshot = await getDocs(q);
-      const todos = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
-        id: doc.id,
-      })) as TodoModel[];
-      setTodos(todos);
+      try {
+        setLoadingTodos(true);
+        const querySnapshot = await getDocs(q);
+        const todos = querySnapshot.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        })) as TodoModel[];
+        setTodos(todos);
+        setLoadingTodos(false);
+      } catch (error) {
+        setLoadingTodos(false);
+        errorToast(`Error Could not get todo list.`);
+      }
     };
 
     getTodos();
@@ -82,8 +93,7 @@ const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
         })
       );
     } catch (error) {
-      //handle errors
-      console.error(error);
+      errorToast(`Error Could not add task ${todo.title}.`);
     }
   };
 
@@ -98,8 +108,7 @@ const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
     try {
       await updateDoc(docRef, { complete });
     } catch (error) {
-      //handle error
-      console.log(error);
+      errorToast(`Error Could not update task.`);
       setTodos((prev) =>
         prev?.map((todo) => {
           if (todo.id !== id) return todo;
@@ -116,14 +125,24 @@ const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
       await deleteDoc(deleteDocRef);
     } catch (error) {
       setTodos(todos);
-      //handle error
-      console.log(error);
+      errorToast(`Error Could not remove task.`);
     }
+  };
+
+  const resetTodosOnLogout = () => {
+    setTodos(undefined);
   };
 
   return (
     <TodoContext.Provider
-      value={{ todos, addTodo, updateTodoComplition, removeTodo }}
+      value={{
+        todos,
+        loadingTodos,
+        addTodo,
+        updateTodoComplition,
+        removeTodo,
+        resetTodosOnLogout,
+      }}
     >
       {children}
     </TodoContext.Provider>
