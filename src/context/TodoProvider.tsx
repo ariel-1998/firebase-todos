@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { TodoModel, TodoModelWithFieldValue } from "../models/TodoModel";
+import { TodoModel, TodoModelWithFieldValueAndNoId } from "../models/TodoModel";
 import { useAuth } from "./AuthContext";
 import {
   addDoc,
@@ -23,8 +23,8 @@ import { v4 as uuidV4 } from "uuid";
 
 type TodoContextProps = {
   todos?: TodoModel[];
-  addTodo: (todo: TodoModelWithFieldValue) => Promise<void>;
-  updateTodoComplition: (id: string, completed: boolean) => Promise<void>;
+  addTodo: (todo: TodoModelWithFieldValueAndNoId) => Promise<void>;
+  updateTodoComplition: (id: string, complete: boolean) => Promise<void>;
   removeTodo: (id: string) => Promise<void>;
 };
 
@@ -64,7 +64,7 @@ const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
     getTodos();
   }, [user]);
 
-  const addTodo = async (todo: TodoModelWithFieldValue) => {
+  const addTodo = async (todo: TodoModelWithFieldValueAndNoId) => {
     try {
       const tempId = uuidV4();
       const tempTodo: TodoModel = {
@@ -87,23 +87,23 @@ const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
     }
   };
 
-  const updateTodoComplition = async (id: string, completed: boolean) => {
+  const updateTodoComplition = async (id: string, complete: boolean) => {
     const docRef = doc(DB, "todos", id);
     setTodos((prev) =>
       prev?.map((todo) => {
         if (todo.id !== id) return todo;
-        return { ...todo, completed };
+        return { ...todo, complete };
       })
     );
     try {
-      await updateDoc(docRef, { completed });
+      await updateDoc(docRef, { complete });
     } catch (error) {
       //handle error
       console.log(error);
       setTodos((prev) =>
         prev?.map((todo) => {
           if (todo.id !== id) return todo;
-          return { ...todo, completed: !completed };
+          return { ...todo, complete: !complete };
         })
       );
     }
@@ -112,8 +112,11 @@ const TodoProvider: React.FC<TodoProviderProps> = ({ children }) => {
   const removeTodo = async (id: string) => {
     const deleteDocRef = doc(DB, "todos", id);
     try {
+      setTodos((prev) => prev?.filter((todo) => todo.id !== id));
       await deleteDoc(deleteDocRef);
     } catch (error) {
+      setTodos(todos);
+      //handle error
       console.log(error);
     }
   };

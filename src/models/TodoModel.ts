@@ -5,10 +5,13 @@ export type TodoModel = {
   userId: string;
   title: string;
   content: string;
-  completed: boolean;
+  complete: boolean;
   createdAt: Timestamp | Date;
 };
 
-export type TodoModelWithFieldValue = Omit<TodoModel, "createdAt"> & {
+export type TodoModelWithFieldValueAndNoId = Omit<
+  TodoModel,
+  "createdAt" | "id"
+> & {
   createdAt: FieldValue;
 };

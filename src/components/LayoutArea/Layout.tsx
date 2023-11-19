@@ -6,7 +6,7 @@ import { Outlet } from "react-router-dom";
 
 const Layout: React.FC = () => {
   return (
-    <Container fluid className="bg-dark layout text-white">
+    <Container fluid className="layout text-white">
       <Row className="d-flex flex-column h-100">
         {/* Header */}
         <Col className="p-0 flex-grow-0">

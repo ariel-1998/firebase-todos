@@ -3,13 +3,14 @@ import { TodoModel } from "../../models/TodoModel";
 import { Timestamp } from "firebase/firestore";
 import { Card, Form } from "react-bootstrap";
 import { useTodos } from "../../context/TodoProvider";
+import DeleteTodoModal from "./DeleteTodoModal";
 
 type TodoProps = {
   todo: TodoModel;
 };
 
 const Todo: React.FC<TodoProps> = ({ todo }) => {
-  const { updateTodoComplition, removeTodo } = useTodos();
+  const { updateTodoComplition } = useTodos();
   const date = dateFormatter(todo.createdAt);
   const [dateInYears, timeInDay] = date?.split(",") || [];
 
@@ -32,21 +33,27 @@ const Todo: React.FC<TodoProps> = ({ todo }) => {
   }
 
   return (
-    <Card className="flex-grow-1 todo-card">
-      <div className={`p-2 todo-card`}>
+    <Card className={`px-4 py-2 ${todo.complete && "disabled-todo"} todo-card`}>
+      <div className="d-flex justify-content-between">
+        <DeleteTodoModal todo={todo} />
         <Form.Check
           type="switch"
-          defaultChecked={todo.completed}
+          defaultChecked={todo.complete}
           onChange={(e) => updateTodoComplition(todo.id, e.target.checked)}
         />
-        <button onClick={() => removeTodo(todo.id)}>Remove</button>
-        <h4 className="text-center ">{todo.title}</h4>
-        <p className="todo-content overflow-auto">{todo.content}</p>
-        <p>{todo.completed}</p>
-        <div className="d-flex justify-content-between">
-          <span>{timeInDay}</span>
-          <span>{dateInYears}</span>
-        </div>
+      </div>
+      <h5 className="border-bottom my-1 fw-bold">{todo.title}</h5>
+      <p className="todo-content overflow-auto mt-1">{todo.content}</p>
+      <div className="d-flex justify-content-between">
+        <span>{timeInDay}</span>
+        <span
+          className={`${todo.complete ? "text-success" : "text-danger"}
+        fw-bold `}
+        >
+          {todo.complete ? "Completed" : "Active"}
+        </span>
+
+        <span>{dateInYears}</span>
       </div>
     </Card>
   );
